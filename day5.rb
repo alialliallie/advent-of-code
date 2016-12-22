@@ -12,9 +12,6 @@ class StepOneTest < MiniTest::Test
     assert_equal 'f', seq.next
     assert_equal 5278568, seq.counter
   end
-
-  def test_complex_input
-  end
 end
 
 def solve(lines)
@@ -27,7 +24,7 @@ def solve(lines)
 end
 
 def solve2(lines)
-  seq = MD5Seq.new(lines)
+  seq = PositionalMD5Seq.new(lines)
   passwd = Array.new(8) { nil }
   begin
     pos, digit = seq.next2
@@ -53,14 +50,11 @@ class MD5Seq
     begin
       @counter += 1
     end until digit?
-    digest[5]
+    result
   end
 
-  def next2
-    begin
-      @counter += 1
-    end until pos_digit?
-    [digest[5].to_i, digest[6]]
+  def result
+    digest[5]
   end
 
   def digest
@@ -71,8 +65,14 @@ class MD5Seq
   def digit?
     /^0{5}/.match(digest)
   end
+end
 
-  def pos_digit?
+class PositionalMD5Seq < MD5Seq
+  def digit?
     /^0{5}[0-7]/.match(digest)
+  end
+
+  def result
+    [digest[5].to_i, digest[6]]
   end
 end
